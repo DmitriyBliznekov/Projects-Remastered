@@ -83,6 +83,7 @@
     <Compile Include="Helpers\MessageListener.cs" />
     <Compile Include="Helpers\OpenChildFormWithNewElement.cs" />
     <Compile Include="Helpers\OpenChildWindowAddOrEdit.cs" />
+    <Compile Include="Helpers\UserActionsMainWindow.cs" />
     <Compile Include="Helpers\XmlSerialization.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\StudentModel.cs" />
