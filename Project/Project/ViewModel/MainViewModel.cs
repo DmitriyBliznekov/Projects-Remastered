@@ -25,7 +25,7 @@ namespace Project.ViewModel
         {
             CollectionOfStudent = new ObservableCollection<StudentModel>();
             StudentsView = CollectionViewSource.GetDefaultView(CollectionOfStudent) as ListCollectionView;
-
+            UserActionMainWindow = UserActionsMainWindow.None;
             SelectedIndex = -1;
 
             AddCommand = new RelayCommand(OnAdd, () => true);
@@ -91,6 +91,10 @@ namespace Project.ViewModel
         }
 
         public ListCollectionView StudentsView { get; }
+
+        public UserActionsMainWindow UserActionMainWindow { get; set; }
+
+        public StudentModel StudentBeforeChange { get; set; }
         #endregion
 
         #region Methods
@@ -149,9 +153,8 @@ namespace Project.ViewModel
 
         private void OnAdd()
         {
-            //true = new, false = edit
-            MessengerInstance.Send(new OpenChildFormWithNewElement(new StudentModel(), true));
-
+            UserActionMainWindow = UserActionsMainWindow.AddNew;
+            MessengerInstance.Send(new MessageFromMainToOkCancel(this));
             ClearCommand.RaiseCanExecuteChanged();
         }
 
@@ -160,7 +163,7 @@ namespace Project.ViewModel
             IList listOfSelectedStudents = (IList)students; // Collection of selected students
             var collection = listOfSelectedStudents.Cast<StudentModel>(); // Cast SelectedItemCollection to Collection<Student>
 
-            string namesOfSelectedStudents = string.Empty; // String of all selected students, which are ready to be removed
+            string namesOfSelectedStudents = string.Empty; // String of all selected students, which are selected to be removed
 
             var last = collection.ToList().Last(); // The last element in selected collection
 
@@ -191,6 +194,7 @@ namespace Project.ViewModel
                 }       
             });
 
+            UserActionMainWindow = UserActionsMainWindow.Delete;
             MessengerInstance.Send(msg);
         }
 
@@ -206,6 +210,8 @@ namespace Project.ViewModel
             {
                 CollectionOfStudent.Clear();
                 LoadXmlData(openFileDialog, openFileDialog.FileName);
+
+                UserActionMainWindow = UserActionsMainWindow.Load;
                 ClearCommand.RaiseCanExecuteChanged(); // Activate Clear button
             }
         }
@@ -223,6 +229,7 @@ namespace Project.ViewModel
             if (saveFileDialog.ShowDialog() == true)
             {
                 XmlSerialization.SerializeObjectToXml(CollectionOfStudent, saveFileDialog.FileName);
+                UserActionMainWindow = UserActionsMainWindow.Save;
             }
         }
 
@@ -236,14 +243,22 @@ namespace Project.ViewModel
                 ClearCommand.RaiseCanExecuteChanged();
             });
 
+            UserActionMainWindow = UserActionsMainWindow.Clear;
             Messenger.Default.Send(msg);
         }
 
         private void OnEdit()
         {
-            //true = new, false = edit
-            MessengerInstance.Send(new OpenChildWindowAddOrEdit(SelectedStudent, false, SelectedIndex.ToString(), 
-                SelectedStudent.FirstName, SelectedStudent.LastName, SelectedStudent.Age, SelectedStudent.Gender));
+            StudentBeforeChange = new StudentModel()
+            {
+                FirstName = SelectedStudent.FirstName,
+                LastName = SelectedStudent.LastName,
+                FullName = SelectedStudent.FullName,
+                Age = SelectedStudent.Age,
+                Gender = SelectedStudent.Gender
+            };
+            UserActionMainWindow = UserActionsMainWindow.EditExist;
+            MessengerInstance.Send(new MessageFromMainToOkCancel(this));
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿<Window x:Class="Project.View.StudentView"
+﻿<Window x:Class="Project.View.OkCandelView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,9 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         x:Name="StudentWindow"
-        Title="Изменение записи" SizeToContent="Height" Width="300">
+        SizeToContent="Height"
+        Width="300"
+        ResizeMode="NoResize">
     <Window.DataContext>
         <Binding Path="StudentVM" Source="{StaticResource Locator}" />
     </Window.DataContext>
@@ -45,13 +47,13 @@
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Возраст" Style="{Binding Mode=OneWay, Source={StaticResource TextBlocksStudentView}}"></TextBlock>
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Пол" Style="{Binding Mode=OneWay, Source={StaticResource TextBlocksStudentView}}"></TextBlock>
 
-                <TextBox Grid.Row="0" Grid.Column="1" Name="txtBoxFirstName"
+                <TextBox Grid.Row="0" Grid.Column="1" Name="TxtBoxFirstName" MaxLength="20"
                          Style="{Binding Mode=OneWay, Source={StaticResource TextBoxesStudentView}}" 
                          Text="{Binding Student.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"></TextBox>
-                <TextBox Grid.Row="1" Grid.Column="1" Name="txtBoxLastName"
+                <TextBox Grid.Row="1" Grid.Column="1" Name="TxtBoxLastName" MaxLength="20"
                          Style="{Binding Mode=OneWay, Source={StaticResource TextBoxesStudentView}}"
                          Text ="{Binding Student.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"></TextBox>
-                <TextBox Grid.Row="2" Grid.Column="1" Name="txtBoxAge"
+                <TextBox Grid.Row="2" Grid.Column="1" Name="TxtBoxAge" MaxLength="5"
                          Style="{Binding Mode=OneWay, Source={StaticResource TextBoxesStudentView}}"
                          Text ="{Binding Student.Age, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"></TextBox>
                 <ComboBox Grid.Row="3" Grid.Column="1"
@@ -70,9 +72,9 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=txtBoxFirstName}" Value="False"/>
-                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=txtBoxLastName}" Value="False"/>
-                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=txtBoxAge}" Value="False"/>
+                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=TxtBoxFirstName}" Value="False"/>
+                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=TxtBoxLastName}" Value="False"/>
+                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=TxtBoxAge}" Value="False"/>
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="IsEnabled" Value="True"/>
                             </MultiDataTrigger>

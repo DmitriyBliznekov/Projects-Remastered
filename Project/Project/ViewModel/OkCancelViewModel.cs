@@ -16,7 +16,8 @@ namespace Project.ViewModel
     {
         public OkCancelViewModel()
         {
-            OkCommand = new RelayCommand<Window>(OnOk, CanOk);
+            UserActionOkCancel = UserActionsOkCancel.None;
+            OkCommand = new RelayCommand<Window>(OnOk, (window) => true);
             CloseWindowCommand = new RelayCommand<Window>(OnCloseWindow);
         }
 
@@ -31,43 +32,24 @@ namespace Project.ViewModel
             }
         }
 
-        public bool NewOrEdit { get; set; }
-
-        public string SelectedIndex { get; set; }
-
-        public string FirstNameSave { get; set; }
-        public string LastNameSave { get; set; }
-        public string AgeSave { get; set; }
-        public string GenderSave { get; set; }
-
-
+        public UserActionsOkCancel UserActionOkCancel { get; set; }
         public RelayCommand<Window> OkCommand { get; private set; }
         public RelayCommand<Window> CloseWindowCommand { get; private set; }
 
         private void OnOk(Window window)
         {
-            if (window != null)
-            {
-                MessengerInstance.Send(new BackDataFromChildForm(Student, NewOrEdit));
-                window.Close();
-            }
-        }
-
-        private bool CanOk(Window window)
-        {
-            return true;
+            if (window == null) return;
+            UserActionOkCancel = UserActionsOkCancel.Ok;
+            MessengerInstance.Send(new MessageFromOkCancelToMain(this));
+            window.Close();
         }
 
         private void OnCloseWindow(Window window)
         {
-            if (window != null)
-            {
-                MessengerInstance.Send(
-                    new CancelAndRemove(new StudentModel()
-                    { FirstName = FirstNameSave, LastName = LastNameSave, Age = AgeSave, Gender = GenderSave },
-                    SelectedIndex, NewOrEdit));
-                window.Close();
-            }
+            if (window == null) return;
+            UserActionOkCancel = UserActionsOkCancel.Cancel;
+            MessengerInstance.Send(new MessageFromOkCancelToMain(this));
+            window.Close();
         }
     }
 }

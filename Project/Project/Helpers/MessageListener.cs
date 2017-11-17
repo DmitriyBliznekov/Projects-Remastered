@@ -44,75 +44,62 @@ namespace Project.Helpers
                     MessageBoxButton.OK);
             });
 
-            //if New clicked
-            Messenger.Default.Register<OpenChildFormWithNewElement>(
-                this,
-                msg =>
+            Messenger.Default.Register<MessageFromMainToOkCancel>(
+                this, msg =>
                 {
-                    var window = new StudentView();
-                    var model = window.DataContext as OkCancelViewModel;
-                    if (model != null)
+                    var window = new OkCandelView();
+                    if (window.DataContext is OkCancelViewModel model)
                     {
-                        model.Student = msg.Student;
-                        model.NewOrEdit = msg.NewStudent;
-                    }
-                    window.ShowDialog();
-                });
-
-            //if edit clicked
-            Messenger.Default.Register<OpenChildWindowAddOrEdit>(
-                this,
-                msg =>
-                {
-                    var window = new StudentView();
-                    var model = window.DataContext as OkCancelViewModel;
-                    if (model != null)
-                    {
-                        model.Student = msg.Student;
-                        model.NewOrEdit = msg.Edit;
-
-                        model.FirstNameSave = msg.FirstName;
-                        model.LastNameSave = msg.LastName;
-                        model.AgeSave = msg.Age;
-                        model.GenderSave = msg.Gender;
-
-                        model.SelectedIndex = msg.Index;
-                    }
-                    window.ShowDialog();
-                });
-            //data from child window
-            Messenger.Default.Register<BackDataFromChildForm>(
-                this,
-                msg =>
-                {
-                    var window = new MainWindow();
-                    var model = window.DataContext as MainViewModel;
-                    if (model != null)
-                    {
-                        if (msg.NewOrEdit)
-                            model.CollectionOfStudent.Add(msg.Student);
-
-                        //if edit mode
-                        else
+                        switch (msg.UserActionMainWindow)
                         {
-                            //model.CollectionOfStudent[msg.Index] = msg.Student;
+                            case UserActionsMainWindow.AddNew:
+                                model.Student = new StudentModel();
+                                window.Title = "Добавление записи";
+                                break;
+                            case UserActionsMainWindow.EditExist:
+                                model.Student = msg.EditableStudent;
+                                window.Title = "Изменение записи";
+                                break;
                         }
+                        model.UserActionOkCancel = UserActionsOkCancel.None;
                     }
+                    window.ShowDialog();
                 });
-            //if cancel clicked
-            Messenger.Default.Register<CancelAndRemove>(
-                this,
-                msg =>
+
+            Messenger.Default.Register<MessageFromOkCancelToMain>(
+                this, msg =>
                 {
-                    var window = new MainWindow();
-                    var model = window.DataContext as MainViewModel;
-                    if (model != null)
+                    var window = new MainView();
+                    if (window.DataContext is MainViewModel model)
                     {
-                        //Trace.WriteLine("Cancel");
-                        //model.CollectionOfStudent[msg.]
-                        if (!msg.NewOrEdit)
-                            model.CollectionOfStudent[int.Parse(msg.SelectedIndex)] = msg.Student;
+                        switch (model.UserActionMainWindow)
+                        {
+                            case UserActionsMainWindow.AddNew:
+                                switch (msg.UserActionOkCancel)
+                                {
+                                    case UserActionsOkCancel.Ok:
+                                        model.CollectionOfStudent.Add(msg.EditedStudent);
+                                        break;
+                                    case UserActionsOkCancel.Cancel:
+                                        Trace.WriteLine("Cancel");
+                                        break;
+                                }
+                                break;
+                            case UserActionsMainWindow.EditExist:
+                                switch (msg.UserActionOkCancel)
+                                {
+                                    case UserActionsOkCancel.Ok:
+                                        model.CollectionOfStudent[model.SelectedIndex] = msg.EditedStudent;
+                                        break;
+                                    case UserActionsOkCancel.Cancel:
+                                        Trace.WriteLine("Cancel");
+                                        break;
+                                }
+                                break;
+                        }
+                        model.UserActionMainWindow = UserActionsMainWindow.None;
                     }
+                    window.ShowDialog();
                 });
         }
 

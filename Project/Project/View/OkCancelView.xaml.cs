@@ -17,9 +17,9 @@ namespace Project.View
     /// <summary>
     /// Логика взаимодействия для StudentView.xaml
     /// </summary>
-    public partial class StudentView : Window
+    public partial class OkCandelView : Window
     {
-        public StudentView()
+        public OkCandelView()
         {
             InitializeComponent();
         }

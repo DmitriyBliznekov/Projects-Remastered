@@ -77,12 +77,11 @@
     <Compile Include="Converters\HiddenElementConverter.cs" />
     <Compile Include="Converters\NoElementInCollectionConverter.cs" />
     <Compile Include="Converters\OpacityConverter.cs" />
-    <Compile Include="Helpers\BackDataFromChildForm.cs" />
-    <Compile Include="Helpers\CancelAndRemove.cs" />
     <Compile Include="Helpers\DeleteMessage.cs" />
+    <Compile Include="Helpers\MessageFromMainToOkCancel.cs" />
+    <Compile Include="Helpers\MessageFromOkCancelToMain.cs" />
     <Compile Include="Helpers\MessageListener.cs" />
-    <Compile Include="Helpers\OpenChildFormWithNewElement.cs" />
-    <Compile Include="Helpers\OpenChildWindowAddOrEdit.cs" />
+    <Compile Include="Helpers\UserActionsOkCancel.cs" />
     <Compile Include="Helpers\UserActionsMainWindow.cs" />
     <Compile Include="Helpers\XmlSerialization.cs" />
     <Compile Include="Model\BaseModel.cs" />
@@ -97,7 +96,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MainWindow.xaml">
+    <Page Include="View\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -105,8 +104,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="View\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\OkCancelView.xaml">

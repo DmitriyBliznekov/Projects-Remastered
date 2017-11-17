@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace Project.Helpers
 {
-    public enum UserActionsMainWindow
+    public enum UserActionsOkCancel
     {
         None,
-        AddNew,
-        Delete,
-        EditExist,
-        Load,
-        Save,
-        Clear
+        Ok,
+        Cancel
     }
 }
