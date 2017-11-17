@@ -12,9 +12,9 @@ using Project.Model;
 
 namespace Project.ViewModel
 {
-    public class StudentViewModel : ViewModelBase
+    public class OkCancelViewModel : ViewModelBase
     {
-        public StudentViewModel()
+        public OkCancelViewModel()
         {
             OkCommand = new RelayCommand<Window>(OnOk, CanOk);
             CloseWindowCommand = new RelayCommand<Window>(OnCloseWindow);

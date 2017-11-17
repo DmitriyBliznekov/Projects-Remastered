@@ -50,7 +50,7 @@ namespace Project.Helpers
                 msg =>
                 {
                     var window = new StudentView();
-                    var model = window.DataContext as StudentViewModel;
+                    var model = window.DataContext as OkCancelViewModel;
                     if (model != null)
                     {
                         model.Student = msg.Student;
@@ -65,7 +65,7 @@ namespace Project.Helpers
                 msg =>
                 {
                     var window = new StudentView();
-                    var model = window.DataContext as StudentViewModel;
+                    var model = window.DataContext as OkCancelViewModel;
                     if (model != null)
                     {
                         model.Student = msg.Student;

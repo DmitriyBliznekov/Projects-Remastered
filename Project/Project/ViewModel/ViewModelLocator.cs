@@ -12,11 +12,11 @@ namespace Project.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<StudentViewModel>();
+            SimpleIoc.Default.Register<OkCancelViewModel>();
         }
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
-        public StudentViewModel StudentVM => ServiceLocator.Current.GetInstance<StudentViewModel>();
+        public OkCancelViewModel StudentVM => ServiceLocator.Current.GetInstance<OkCancelViewModel>();
 
         public static void Cleanup()
         {
