@@ -99,7 +99,6 @@ namespace Project.Helpers
                         }
                         model.UserActionMainWindow = UserActionsMainWindow.None;
                     }
-                    window.ShowDialog();
                 });
         }
 
