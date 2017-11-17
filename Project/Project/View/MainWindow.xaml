@@ -1,0 +1,194 @@
+﻿<Window x:Class="Project.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project"
+        xmlns:converters="clr-namespace:Project.Converters"
+        mc:Ignorable="d"
+        Title="Список студентов"
+        Height="300" MaxWidth="600" 
+        SizeToContent="Width"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Images/Icon DB.png"
+        DataContext="{Binding Main, Source={StaticResource Locator}}">
+
+    <Window.IsEnabled>
+        <Binding Path="BindableProperty" Source="{StaticResource MessageListener}" />
+    </Window.IsEnabled>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Dictionary/Resources.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+                    <converters:AgeConverter x:Key="AgeConverter" />
+                    <converters:GenderConverter x:Key="GenderConverter" />
+                    <converters:NoElementInCollectionConverter x:Key="VisibilityConverter" />
+                    <converters:OpacityConverter x:Key="OpacityConverter" />
+                    <converters:HiddenElementConverter x:Key="HiddenElementConverter" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        
+        <!--<ControlTemplate x:Key="ErrorTemplate">
+            <DockPanel LastChildFill="True">
+                <Border DockPanel.Dock="Top" BorderBrush="Red" BorderThickness="4">
+                    <AdornedElementPlaceholder />
+                </Border>
+            </DockPanel>
+        </ControlTemplate>-->
+
+        <!--<Style x:Key="ValidationsOfFields" TargetType="StackPanel">
+            <Style.Resources>
+                <Style TargetType="TextBox">
+                    <Setter Property="Margin" Value="4"></Setter>
+                    <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate}"></Setter>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, 
+                                                               Path=(Validation.Errors).[0].ErrorContent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Style.Resources>
+        </Style>-->
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="LightSlateGray">
+            <Border VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Foreground="Indigo" RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleY="2" ScaleX="1"/>
+                            </TransformGroup>
+                        </TextBlock.RenderTransform>
+                        <Run Text="В коллекции нет ни одного элемента" />
+                        <LineBreak />
+                        <Run Text="Загрузите готовую коллекцию или создайте свою" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="0" x:Name="brdCustomers"
+                    Margin="0"
+                    Background="Blue"
+                    BorderBrush="LightGray"
+                    BorderThickness="1"
+                    Visibility="{Binding CollectionOfStudent.Count, Converter={StaticResource VisibilityConverter}}">
+            
+            <DataGrid x:Name="mainDataGrid" 
+                      Margin="5,5,5,0"
+                      AlternatingRowBackground="Aqua"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserResizeRows="True"
+                      SelectionMode="Extended"
+                      SelectionUnit="FullRow"
+                      SelectedIndex="{Binding SelectedIndex}"
+                      AutoGenerateColumns="False"
+                      SelectedItem="{Binding SelectedStudent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Path=CollectionOfStudent, Mode=OneWay}">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Полное имя" MinWidth="100"
+                                        Binding="{Binding FullName, Mode=OneWay}">
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Возраст"
+                                        Binding="{Binding Age, Converter={StaticResource AgeConverter}, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Пол"
+                                        Binding="{Binding Gender, Converter={StaticResource GenderConverter},Mode=OneWay}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <StackPanel Grid.Row="1" Style="{Binding Mode=OneWay, Source={StaticResource ButtonsStyle}}">
+            <Button Command="{Binding AddCommand}">
+                <StackPanel>
+                    <Image Source="/Images/New Student.png" />
+                    <TextBlock Text="Добавить" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItems, ElementName=mainDataGrid}">
+                <StackPanel>
+                    <Image Source="/Images/Delete.png" />
+                    <TextBlock Text="Удалить" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding EditCommand}">
+                <StackPanel>
+                    <Image Source="/Images/Edit.png" />
+                    <TextBlock Text="Изменить" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding LoadCommand}">
+                <StackPanel>
+                    <Image Source="/Images/Load.png" />
+                    <TextBlock Text="Загрузить" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding SaveCommand}">
+                <StackPanel>
+                    <Image Source="/Images/Save as.png" />
+                    <TextBlock Text="Сохранить" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding ClearCommand}">
+                <StackPanel>
+                    <Image Source="/Images/Clear.png" />
+                    <TextBlock Text="Очистить" />
+                </StackPanel>
+            </Button>
+            <!--<Button Content="Чек" Margin="1" MinWidth="40" Command="{Binding StudentModel.OkCommand, Mode=OneWay}" />-->
+        </StackPanel>
+
+        
+
+        <!--<Border Grid.Row="2">
+            <Grid>
+                --><!--<Grid Visibility="{Binding CollectionOfStudent.Count, Converter={StaticResource VisibilityConverter}}">--><!--
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0" 
+                            Opacity="{Binding SelectedStudent, Converter={StaticResource OpacityConverter}}" 
+                            Style="{Binding Mode=OneWay, Source={StaticResource ValidationsOfFields}}">
+                    <TextBlock Text="Имя" />
+                    <TextBlock Text="Фамилия" />
+                    <TextBlock Text="Возраст" />
+                    <TextBlock Text="Пол" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" DataContext="{Binding SelectedStudent}"
+                            IsEnabled="{Binding Converter={StaticResource HiddenElementConverter}, Mode=OneWay}"
+                            Style="{Binding Mode=OneWay, Source={StaticResource ValidationsOfFields}}">
+                    <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+                    <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+                    <TextBox Text="{Binding Age, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+                    <ComboBox SelectedIndex="{Binding Gender, UpdateSourceTrigger=PropertyChanged}">
+                        <ComboBoxItem>Мужской</ComboBoxItem>
+                        <ComboBoxItem>Женский</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </Border>-->
+    </Grid>
+</Window>
+

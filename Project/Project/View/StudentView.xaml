@@ -1,0 +1,95 @@
+﻿<Window x:Class="Project.View.StudentView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project.View"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        x:Name="StudentWindow"
+        Title="Изменение записи" SizeToContent="Height" Width="300">
+    <Window.DataContext>
+        <Binding Path="StudentVM" Source="{StaticResource Locator}" />
+    </Window.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Dictionary/Resources.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Margin="10"
+                Background="BlueViolet">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Имя" Style="{Binding Mode=OneWay, Source={StaticResource TextBlocksStudentView}}"></TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Фамилия" Style="{Binding Mode=OneWay, Source={StaticResource TextBlocksStudentView}}"></TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Возраст" Style="{Binding Mode=OneWay, Source={StaticResource TextBlocksStudentView}}"></TextBlock>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Пол" Style="{Binding Mode=OneWay, Source={StaticResource TextBlocksStudentView}}"></TextBlock>
+
+                <TextBox Grid.Row="0" Grid.Column="1" Name="txtBoxFirstName"
+                         Style="{Binding Mode=OneWay, Source={StaticResource TextBoxesStudentView}}" 
+                         Text="{Binding Student.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"></TextBox>
+                <TextBox Grid.Row="1" Grid.Column="1" Name="txtBoxLastName"
+                         Style="{Binding Mode=OneWay, Source={StaticResource TextBoxesStudentView}}"
+                         Text ="{Binding Student.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"></TextBox>
+                <TextBox Grid.Row="2" Grid.Column="1" Name="txtBoxAge"
+                         Style="{Binding Mode=OneWay, Source={StaticResource TextBoxesStudentView}}"
+                         Text ="{Binding Student.Age, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"></TextBox>
+                <ComboBox Grid.Row="3" Grid.Column="1"
+                          SelectedIndex="{Binding Student.Gender, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBoxItem>Мужской</ComboBoxItem>
+                    <ComboBoxItem>Женский</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Style="{Binding Mode=OneWay, Source={StaticResource ButtonsStyle}}">
+            <Button Command="{Binding OkCommand}" CommandParameter="{Binding ElementName=StudentWindow}" Width="90" Height="30">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=txtBoxFirstName}" Value="False"/>
+                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=txtBoxLastName}" Value="False"/>
+                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=txtBoxAge}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/Okay.png" Height="16" Width="16"/>
+                    <TextBlock Text="Принять" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding CloseWindowCommand}" CommandParameter="{Binding ElementName=StudentWindow}">
+                <StackPanel>
+                    <Image Source="/Images/Cancel.png" />
+                    <TextBlock Text="Отмена" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>
